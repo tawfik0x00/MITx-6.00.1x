@@ -135,5 +135,5 @@ These folders showcase the most substantial work in the course:
 
 **Mohamed Tawfik**
 
-**Repository Link:** [https://github.com/tawfik0x00/MITx-6.00.1x](https://github.com/tawfik0x00/MITx-6.00.1x)
+
 
