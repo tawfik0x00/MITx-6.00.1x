@@ -1,51 +1,75 @@
-# Cipher — Caesar Cipher Encryption & Decryption
+# Caesar Cipher
 
-A Python implementation of a Caesar cipher developed as part of MITx
-6.00.1x: Introduction to Computer Science and Programming Using Python.
+A Python implementation of a Caesar cipher encryption and decryption system, developed as the capstone project for Unit 5 of MITx 6.00.1x. This is the final, clean version of the implementation.
 
 ## Overview
 
-This project implements a Caesar cipher system capable of encrypting and
-decrypting messages using configurable alphabet shifts. It also includes
-logic for identifying the most likely encryption shift when the shift is
-unknown.
+The Caesar cipher shifts each letter in a message by a fixed number of positions in the alphabet. This project implements a full object-oriented cipher system that can encrypt a plaintext message with any shift, and decrypt a ciphertext message even when the shift is unknown — by trying all 26 possibilities and selecting the one that produces the most valid English words.
 
-## Features
+## Files
 
-- Encrypt plaintext using a Caesar cipher
-- Decrypt ciphertext using a specified shift
-- Support for arbitrary alphabet shifts
-- Preserve uppercase and lowercase characters
-- Detect possible shifts using a word dictionary
-- Object-oriented design using inheritance
+| File | Description |
+|------|-------------|
+| `ps6.py` | Main implementation — the `Message`, `PlaintextMessage`, and `CiphertextMessage` classes, plus `decrypt_story()` |
+| `story.txt` | A Caesar-encrypted story used to test `decrypt_story()` |
+| `words.txt` | Dictionary of valid English words used during decryption |
+
+## How to Run
+
+```bash
+python ps6.py
+```
+
+The file includes example usage at the bottom to demonstrate encryption and decryption.
 
 ## Architecture
 
-The implementation is organized around:
+The system is built around a three-class hierarchy:
 
-- `Message` — base class for message processing
-- `PlaintextMessage` — encryption and plaintext handling
-- `CiphertextMessage` — ciphertext analysis and decryption
+```
+Message
+  |
+  +-- PlaintextMessage    (encrypts with a given shift)
+  |
+  +-- CiphertextMessage   (decrypts by trying all shifts)
+```
 
-## Concepts Demonstrated
+### Message (base class)
 
-- Python
-- Object-Oriented Programming
-- Classes and inheritance
-- String manipulation
-- Dictionaries and lists
-- Algorithms
-- File processing
-- Problem solving
+- Stores the raw message text and the word list.
+- `build_shift_dict(shift)` — builds a letter-to-letter mapping for the given shift.
+- `apply_shift(shift)` — applies the mapping to produce encrypted or decrypted text.
 
-## How It Works
+### PlaintextMessage
 
-The Caesar cipher shifts each alphabetic character by a fixed number of
-positions while preserving the character's case.
+- Stores the shift and the pre-computed encrypted text.
+- `get_shift()`, `get_encrypting_dict()`, `get_message_text_encrypted()` — getters.
+- `change_shift(shift)` — updates the shift and re-encrypts.
 
-For example:
+### CiphertextMessage
 
-```text
-Plaintext:  HELLO
-Shift:      3
-Ciphertext: KHOOR
+- `decrypt_message()` — tries all 26 shifts, counts valid English words for each, and returns `(best_shift, decrypted_text)`.
+
+## Example
+
+```python
+plaintext = PlaintextMessage('Hello, World!', 5)
+print(plaintext.get_message_text_encrypted())
+# Output: Mjqqt, Btwqi!
+
+ciphertext = CiphertextMessage('Mjqqt, Btwqi!')
+print(ciphertext.decrypt_message())
+# Output: (5, 'Hello, World!')
+```
+
+## Cipher Rules
+
+- Uppercase and lowercase letters shift independently, preserving case.
+- Spaces, punctuation, and digits are not shifted.
+- Shifts wrap around: `z` shifted by 3 becomes `c`.
+
+**Concepts demonstrated:**
+- Object-oriented programming — classes, inheritance, encapsulation
+- Brute-force decryption via exhaustive key-space search
+- Modular arithmetic for circular alphabet shifting
+- File I/O and word list validation
